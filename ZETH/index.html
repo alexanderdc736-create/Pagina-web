@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CiberSeguridad - Ataques y Protección</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables CSS */
+        :root {
+            --primary: #00ffff;
+            --secondary: #ff00ff;
+            --accent: #00ff00;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --text: #e0e0ff;
+            --card-bg: rgba(10, 15, 30, 0.7);
+        }
+
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--darker);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Efectos globales */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--secondary);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--primary);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(42px, 9999px, 44px, 0); }
+            5% { clip: rect(12px, 9999px, 59px, 0); }
+            10% { clip: rect(48px, 9999px, 29px, 0); }
+            15% { clip: rect(42px, 9999px, 73px, 0); }
+            20% { clip: rect(63px, 9999px, 27px, 0); }
+            25% { clip: rect(34px, 9999px, 55px, 0); }
+            30% { clip: rect(86px, 9999px, 73px, 0); }
+            35% { clip: rect(20px, 9999px, 20px, 0); }
+            40% { clip: rect(26px, 9999px, 60px, 0); }
+            45% { clip: rect(25px, 9999px, 66px, 0); }
+            50% { clip: rect(57px, 9999px, 98px, 0); }
+            55% { clip: rect(5px, 9999px, 46px, 0); }
+            60% { clip: rect(82px, 9999px, 31px, 0); }
+            65% { clip: rect(54px, 9999px, 27px, 0); }
+            70% { clip: rect(28px, 9999px, 99px, 0); }
+            75% { clip: rect(45px, 9999px, 69px, 0); }
+            80% { clip: rect(23px, 9999px, 85px, 0); }
+            85% { clip: rect(54px, 9999px, 84px, 0); }
+            90% { clip: rect(45px, 9999px, 47px, 0); }
+            95% { clip: rect(37px, 9999px, 20px, 0); }
+            100% { clip: rect(4px, 9999px, 91px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            5% { clip: rect(52px, 9999px, 74px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            15% { clip: rect(75px, 9999px, 5px, 0); }
+            20% { clip: rect(67px, 9999px, 61px, 0); }
+            25% { clip: rect(14px, 9999px, 79px, 0); }
+            30% { clip: rect(1px, 9999px, 66px, 0); }
+            35% { clip: rect(86px, 9999px, 30px, 0); }
+            40% { clip: rect(23px, 9999px, 98px, 0); }
+            45% { clip: rect(85px, 9999px, 72px, 0); }
+            50% { clip: rect(71px, 9999px, 75px, 0); }
+            55% { clip: rect(2px, 9999px, 48px, 0); }
+            60% { clip: rect(30px, 9999px, 16px, 0); }
+            65% { clip: rect(59px, 9999px, 50px, 0); }
+            70% { clip: rect(41px, 9999px, 62px, 0); }
+            75% { clip: rect(2px, 9999px, 82px, 0); }
+            80% { clip: rect(47px, 9999px, 73px, 0); }
+            85% { clip: rect(3px, 9999px, 27px, 0); }
+            90% { clip: rect(26px, 9999px, 55px, 0); }
+            95% { clip: rect(42px, 9999px, 97px, 0); }
+            100% { clip: rect(38px, 9999px, 49px, 0); }
+        }
+
+        /* Fondo animado */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background: linear-gradient(to bottom, var(--darker), var(--dark));
+        }
+
+        .matrix-code {
+            position: absolute;
+            color: var(--accent);
+            font-family: monospace;
+            font-size: 14px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        /* Header */
+        header {
+            padding: 1.5rem 0;
+            background: rgba(5, 5, 15, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--primary);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(10, 20, 40, 0.8) 0%, rgba(5, 10, 20, 0.9) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: var(--text);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .cta-button:hover {
+            background: var(--primary);
+            color: var(--dark);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        /* Secciones generales */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Tarjetas de ataques */
+        .attacks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .attack-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .attack-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .attack-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+            border-color: var(--primary);
+        }
+
+        .attack-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .attack-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* Sección de protección */
+        .protection {
+            background: rgba(5, 10, 20, 0.7);
+        }
+
+        .protection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .protection-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .protection-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
+            border-color: var(--accent);
+        }
+
+        .protection-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        /* Sección del equipo */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 0, 255, 0.2);
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(255, 0, 255, 0.2);
+            border-color: var(--secondary);
+        }
+
+        .team-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            border: 3px solid var(--secondary);
+            overflow: hidden;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--dark);
+        }
+
+        .team-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .team-role {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Galería */
+        .gallery {
+            background: rgba(5, 10, 20, 0.7);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            height: 200px;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+            border-color: var(--primary);
+        }
+
+        .gallery-icon {
+            font-size: 3rem;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(5, 5, 15, 0.9);
+            padding: 3rem 0 1.5rem;
+            border-top: 1px solid var(--primary);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Efecto de brillo en tarjetas */
+        .glow-card {
+            position: relative;
+        }
+
+        .glow-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            z-index: -1;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .glow-card:hover::after {
+            opacity: 1;
+            animation: glow 1.5s linear infinite;
+        }
+
+        @keyframes glow {
+            0% {
+                filter: blur(5px) opacity(0.7);
+            }
+            50% {
+                filter: blur(10px) opacity(1);
+            }
+            100% {
+                filter: blur(5px) opacity(0.7);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(5, 5, 15, 0.95);
+                padding: 1rem 0;
+                border-top: 1px solid var(--primary);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fondo Matrix -->
+    <div class="matrix-bg" id="matrix-bg"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo glitch" data-text="CyberShield">CyberShield</div>
+                <ul class="nav-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#ataques">Ataques</a></li>
+                    <li><a href="#proteccion">Protección</a></li>
+                    <li><a href="#equipo">Equipo</a></li>
+                    <li><a href="#galeria">Galería</a></li>
+                </ul>
+                <div class="menu-toggle" id="mobile-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="container">
+            <h1 class="glitch" data-text="Ataques Cibernéticos">Ataques Cibernéticos</h1>
+            <p>Explora los ataques más comunes que afectan a millones de usuarios en el mundo digital y aprende a protegerte.</p>
+            <a href="#ataques" class="cta-button">Descubrir Más</a>
+        </div>
+    </section>
+
+    <!-- Sección de Ataques -->
+    <section id="ataques">
+        <div class="container">
+            <h2 class="section-title">Tipos de Ataques</h2>
+            <div class="attacks-grid">
+                <div class="attack-card glow-card">
+                    <div class="attack-icon">
+                        <i class="fas fa-fish"></i>
+                    </div>
+<body>
+                    <h3>Phishing</h3>
+                    
+                    <p>Robo de datos mediante páginas falsas o correos engañosos que imitan fuentes legítimas para obtener información confidencial.</p>
+                </div>
+                <div class="attack-card glow-card">
+                    <div class="attack-icon">
+                        <i class="fas fa-virus"></i>
+                    </div>
+                    <h3>Malware</h3>
+                    <p>Programas maliciosos que infectan sistemas y roban información, incluyendo virus, troyanos y spyware.</p>
+                </div>
+                <div class="attack-card glow-card">
+                    <div class="attack-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Ransomware</h3>
+                    <p>Secuestro de datos a cambio de pago, cifrando archivos del usuario y exigiendo rescate para recuperarlos.</p>
+                </div>
+                <div class="attack-card glow-card">
+                    <div class="attack-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3>DDoS</h3>
+                    <p>Ataque distribuido de denegación de servicio que satura servidores y tumba servicios mediante múltiples solicitudes simultáneas.</p>
+                </div>
+                <div class="attack-card glow-card">
+                    <div class="attack-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h3>Ingeniería Social</h3>
+                    <p>Manipulación psicológica para obtener información confidencial, explotando la confianza de las personas.</p>
+                </div>
+                <div class="attack-card glow-card">
+                    <div class="attack-icon">
+                        <i class="fas fa-user-alt"></i>
+                    </div>
+                    <h3>Suplantación de Identidad</h3>
+                    <p>Uso no autorizado de información personal para cometer fraudes o acceder a cuentas y servicios.</p>
+                </div>
+            </div>
+        </div>
+<body> 
+    </section>
+
+    <!-- Sección de Protección -->
+    <section id="proteccion" class="protection">
+        <div class="container">
+            <h2 class="section-title">Cómo Protegerse</h2>
+            <div class="protection-grid">
+                <div class="protection-item">
+                    <div class="protection-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h3>Contraseñas Fuertes</h3>
+                    <p>Usa combinaciones complejas con mayúsculas, números y símbolos.</p>
+                </div>
+                <div class="protection-item">
+                    <div class="protection-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Autenticación 2FA</h3>
+                    <p>Activa la verificación en dos pasos para mayor seguridad.</p>
+                </div>
+                <div class="protection-item">
+                    <div class="protection-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>Actualizaciones</h3>
+                    <p>Mantén tu software y sistemas operativos actualizados.</p>
+                </div>
+                <div class="protection-item">
+                    <div class="protection-icon">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3>Enlaces Seguros</h3>
+                    <p>No hagas clic en enlaces sospechosos o de remitentes desconocidos.</p>
+                </div>
+                <div class="protection-item">
+                    <div class="protection-icon">
+                        <i class="fas fa-shield-virus"></i>
+                    </div>
+                    <h3>Antivirus</h3>
+                    <p>Utiliza software antivirus y manténlo actualizado.</p>
+                </div>
+                <div class="protection-item">
+                    <div class="protection-icon">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <h3>VPN</h3>
+                    <p>Usa una red privada virtual para conexiones seguras.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección del Equipo -->
+    <section id="equipo">
+        <div class="container">
+            <h2 class="section-title">Nuestro Equipo</h2>
+            <div class="team-grid">
+                <div class="team-card glow-card">
+                    <div class="team-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>John Díaz </h3>
+                    <div class="team-role">Especialista en Ciberseguridad</div>
+                    <p>5+ años de experiencia en análisis de amenazas y protección de sistemas corporativos.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="team-card glow-card">
+                    <div class="team-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>Emanuel Pino </h3>
+                    <div class="team-role">Investigadora de Vulnerabilidades</div>
+                    <p>Soy Emmanuel Pino, un joven de 23 años apasionado por la intersección entre la tecnología y el deporte.
+Profesionalmente, me dedico al desarrollo de software. Me atrae profundamente la lógica de la programación y la capacidad de construir soluciones innovadoras desde cero. Es un campo que me reta intelectualmente todos los días.
+Fuera del trabajo, mantengo un equilibrio activo mediante dos deportes clave. El tenis de mesa me aporta concentración y pensamiento estratégico, habilidades que utilizo tanto en la mesa como frente al ordenador. El fútbol, por su parte, es mi vía de escape, donde disfruto de la camaradería y la emoción del trabajo en equipo.
+A mis 23 años, combino estas pasiones para llevar una vida dinámica, siempre listo para el próximo desafío, ya sea en el código o en el campo de juego.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-medium"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería -->
+    <section id="galeria" class="gallery">
+        <div class="container">
+            <h2 class="section-title">Galería</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="gallery-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">CyberShield</div>
+                <div class="footer-links">
+                    <a href="#inicio">Inicio</a>
+                    <a href="#ataques">Ataques</a>
+                    <a href="#proteccion">Protección</a>
+                    <a href="#equipo">Equipo</a>
+                    <a href="#galeria">Galería</a>
+                </div>
+                <p class="copyright">© 2025 Proyecto Seguridad Informática | Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Menú móvil
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Efecto Matrix en el fondo
+        function createMatrix() {
+            const matrixBg = document.getElementById('matrix-bg');
+            const characters = "01";
+            const fontSize = 14;
+            const columns = Math.floor(window.innerWidth / fontSize);
+            
+            for (let i = 0; i < columns; i++) {
+                const code = document.createElement('div');
+                code.className = 'matrix-code';
+                code.style.left = `${i * fontSize}px`;
+                code.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                code.style.animationDelay = `${Math.random() * 5}s`;
+                
+                let content = '';
+                for (let j = 0; j < 30; j++) {
+                    content += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                
+                code.textContent = content;
+                matrixBg.appendChild(code);
+            }
+        }
+
+        // Scroll suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Cerrar menú móvil si está abierto
+                    document.querySelector('.nav-links').classList.remove('active');
+                }
+            });
+        });
+
+        // Efecto de brillo aleatorio en elementos
+        function randomGlow() {
+            const cards = document.querySelectorAll('.glow-card');
+            cards.forEach(card => {
+                const randomTime = Math.random() * 5000 + 2000;
+                setTimeout(() => {
+                    card.classList.add('glowing');
+                    setTimeout(() => {
+                        card.classList.remove('glowing');
+                    }, 1000);
+                }, randomTime);
+            });
+            
+            setTimeout(randomGlow, 7000);
+        }
+
+        // Inicialización
+        window.addEventListener('DOMContentLoaded', () => {
+            createMatrix();
+            randomGlow();
+        });
+
+        // Efecto de escritura en el título
+        const heroTitle = document.querySelector('.hero h1');
+        const originalText = heroTitle.textContent;
+        let isGlitching = false;
+
+        function startGlitch() {
+            if (isGlitching) return;
+            isGlitching = true;
+            
+            let glitchText = '';
+            for (let i = 0; i < originalText.length; i++) {
+                glitchText += Math.random() > 0.5 ? originalText[i] : '01'[Math.floor(Math.random() * 2)];
+            }
+            
+            heroTitle.textContent = glitchText;
+            
+            setTimeout(() => {
+                heroTitle.textContent = originalText;
+                isGlitching = false;
+            }, 100);
+        }
+
+        setInterval(startGlitch, 3000);
+    </script>
+</body>
+</html>
